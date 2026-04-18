@@ -4,22 +4,25 @@
 // Your name
 // Last Modified: January 12, 2026
 
-#include <stdio.h>
-#include <stdint.h>
-#include <ti/devices/msp/msp.h>
-#include "../inc/ST7735.h"
-#include "../inc/Clock.h"
-#include "../inc/LaunchPad.h"
-#include "../inc/TExaS.h"
-#include "../inc/Timer.h"
-#include "../inc/ADC1.h"
-#include "../inc/DAC5.h"
-#include "../inc/Arabic.h"
-#include "SmallFont.h"
-#include "LED.h"
-#include "Switch.h"
-#include "Sound.h"
-#include "images/images.h"
+ #include <stdio.h>
+ #include <stdint.h>
+ #include <ti/devices/msp/msp.h>
+ #include "../inc/ST7735.h"
+ #include "../inc/Clock.h"
+ #include "../inc/LaunchPad.h"
+ #include "../inc/TExaS.h"
+ #include "../inc/Timer.h"
+ #include "../inc/ADC1.h"
+ #include "../inc/DAC5.h"
+ #include "../inc/Arabic.h"
+ #include "SmallFont.h"
+ #include "LED.h"
+ #include "Switch.h"
+ #include "Sound.h"
+ #include "images/images.h"
+ #include "UART1.h"
+ #include "UART2.h"
+ #include "FIFO1.h"
 // #include "UART1.h"
 // #include "UART1.h"
 
@@ -31,13 +34,13 @@ void PLL_Init(void){ // set phase lock loop (PLL)
   // Clock_Init40MHz(); // run this line for 40MHz
   Clock_Init80MHz(0);   // run this line for 80MHz
 }
-int state = 0;
-int language = 0;
+
 Arabic_t ArabicAlphabet[]={
 alif,ayh,baa,daad,daal,dhaa,dhaal,faa,ghayh,haa,ha,jeem,kaaf,khaa,laam,meem,noon,qaaf,raa,saad,seen,sheen,ta,thaa,twe,waaw,yaa,zaa,space,dot,null
 };
 Arabic_t Hello[]={alif,baa,ha,raa,meem,null}; // hello
 Arabic_t WeAreHonoredByYourPresence[]={alif,noon,waaw,ta,faa,raa,sheen,null}; // we are honored by your presence
+char engHonored[] = "We are honored by your presence";
 
 int main0(void){ // main 0, demonstrate Arabic output
   __disable_irq();
@@ -56,8 +59,8 @@ int main0(void){ // main 0, demonstrate Arabic output
   }
 }
 
-void state0(){
-}
+// void state0(){
+// }
 uint32_t M=1;
 uint32_t Random32(void){
   M = 1664525*M+1013904223;
@@ -69,20 +72,7 @@ uint32_t Random(uint32_t n){
 
 
 // games  engine runs at 30Hz
-void TIMG12_IRQHandler(void){uint32_t pos,msg;
-  if((TIMG12->CPU_INT.IIDX) == 1){ // this will acknowledge
-    GPIOB->DOUTTGL31_0 = GREEN; // toggle PB27 (minimally intrusive debugging)
-    GPIOB->DOUTTGL31_0 = GREEN; // toggle PB27 (minimally intrusive debugging)
-// game engine goes here
-    // 1) sample slide pot
-    // 2) read input switches
-    // 3) move sprites
-    // 4) start sounds
-    // 5) set semaphore
-    // NO LCD OUTPUT IN INTERRUPT SERVICE ROUTINES
-    GPIOB->DOUTTGL31_0 = GREEN; // toggle PB27 (minimally intrusive debugging)
-  }
-}
+
 uint8_t TExaS_LaunchPadLogicPB27PB26(void){
   return (0x80|((GPIOB->DOUT31_0>>26)&0x03));
 }
@@ -143,7 +133,7 @@ int main1(void){ // main1
 }
 
 // use main2 to observe graphics
-int main2(void){ // main2
+int main(void){ // main2
   __disable_irq();
   PLL_Init(); // set bus speed
   LaunchPad_Init();
@@ -220,9 +210,48 @@ int main4(void){ uint32_t last=0,now;
     // modify this to test all your sounds
   }
 }
+//controls
+uint8_t inputs = 0; 
+// A1, B1, A2, B2, grounded1, double jump1, grounded2, double jump2
+// bit 3       bit 0
+uint8_t slidepot1 = 0;
+//6bits
+uint8_t slidepot2 = 0;
+uint8_t swordPos1 = 0;
+uint8_t swordPos2 = 0;
+uint8_t joystick1 = 0; 
+// bits 4-7 LR, bits 0-3 UD
+uint8_t joystick2 = 0; 
+uint8_t status1 = 0;
+//0-1 hp, 2 tgl invincibility, 3-7 invincibility time
+uint8_t status2 = 0;
+//0-1 hp, 2 tgl invincibility
 
+// current states
+int8_t oldPos[4];
+int8_t positions[4];
+int8_t velocity[4];
+int8_t acceleration[4];
+//x1, y1, x2, y2
+void state0_init(void);
+void state1_init(void);
+void state2_init(void);
+void readData();
 // ALL ST7735 OUTPUT MUST OCCUR IN MAIN
-int main5(void){ // final main
+void main12(){
+  __disable_irq();
+  PLL_Init(); // set bus speed
+  LaunchPad_Init();
+  ST7735_InitPrintf(INITR_BLACKTAB); // INITR_REDTAB for AdaFruit, INITR_BLACKTAB for HiLetGo
+  ST7735_FillScreen(ST7735_BLACK);
+  ADCinit();     //PB18 = ADC1 channel 5, slidepot
+  Switch_Init(); // initialize switches
+  LED_Init();    // initialize LED
+  Sound_Init();  // initialize sound
+  TExaS_Init(0,0,&TExaS_LaunchPadLogicPB27PB26); // PB27 and PB26
+  state2_init();
+}
+int main10(void){ // final main
   __disable_irq();
   PLL_Init(); // set bus speed
   LaunchPad_Init();
@@ -236,12 +265,214 @@ int main5(void){ // final main
     // initialize interrupts on TimerG12 at 30 Hz
   TimerG12_IntArm(80000000/30,2);
   // initialize all data structures
-  __enable_irq();
 
+  __enable_irq();
+  state0_init();
   while(1){
     // wait for semaphore
        // clear semaphore
        // update ST7735R
     // check for end game or level switch
   }
+}
+int state = 2;
+int language = 0;
+int dataReady = 1;
+
+// language select
+char Hell[] = "Hello";
+int8_t min(int8_t a, int8_t b); 
+int8_t max(int8_t a, int8_t b);
+void eraseOld();
+uint8_t makeSwords();
+int8_t ypos(int8_t x, int8_t y, int8_t a, int8_t p);
+void sendPos1();
+void sendPos2();
+void sendState();
+
+void state0_init(void){
+  ST7735_SetCursor(0,15);
+  ST7735_OutString(Hell);
+  Arabic_SetCursor(0,31);
+  Arabic_OutString(Hello);
+}
+void state0(void){
+  if(inputs&&4){
+    language++;
+    language%=3;
+  }
+  if(inputs&&8){
+    state = 1;
+    sendState();
+    state1_init();
+  }
+}
+
+
+void state1_init(void){
+  ST7735_FillScreen(ST7735_BLACK);
+  //logo
+  ST7735_SetCursor(0,15);
+}
+
+void state1(void){
+  if(inputs&&4){
+    state = 0; 
+    sendState();
+    state0_init();
+  }
+  if(inputs&&8){
+    state = 2;
+    sendState();
+    state2_init();
+  }
+}
+int8_t bounds[] = {128, 160}; //change
+void state2_init(void){
+  ST7735_FillScreen(ST7735_BLACK);
+  //draw platforms
+  ST7735_FillRect(10, 100, 50, 10, 0xc487);
+  ST7735_FillRect(80, 100, 50, 10, 0xc487);
+}
+void state2(){
+  for(int i = 0; i<3; i++){
+      positions[i]+=velocity[i];
+      positions[i] = min(bounds[i%2], positions[i]);
+      positions[i] = max(0, positions[i]);
+      velocity[i]+=acceleration[i];
+      }
+    if(velocity[0]<-3) velocity[0] = -3;//capping x mobility
+    if(velocity[0]>3) velocity[0] = 3;
+    if(velocity[2]<-3) velocity[2] = -3;//capping x mobility
+    if(velocity[2]>3) velocity[2] = 3;
+    if(acceleration[0]==0) velocity[0]/=2;
+    if(acceleration[2]==0) velocity[2]/=2;
+    positions[1] = ypos(positions[0], positions[1], acceleration[1], 0);
+    positions[3] = ypos(positions[2], positions[3], acceleration[3], 1);
+    if(swordPos1<slidepot1) swordPos1 = max(swordPos1+20, slidepot1);
+    if(swordPos1>slidepot1) swordPos1 = min(swordPos1-20, slidepot1);
+    if(swordPos2<slidepot2) swordPos2 = max(swordPos2+20, slidepot2);
+    if(swordPos2>slidepot2) swordPos2 = min(swordPos2-20, slidepot2);
+  if(dataReady){
+     readData();
+     eraseOld();
+     sendPos1();
+     sendPos2();
+     //AssignValues();
+     makeSwords();
+  }
+}
+int8_t min(int8_t a, int8_t b){
+  if(a>b) return b;
+  return a;
+}
+int8_t max(int8_t a, int8_t b){
+  if(a>b) return a;
+  return b;
+}
+void eraseOld(){
+  ST7735_FillRect(oldPos[0], oldPos[1], oldPos[0]+11, oldPos[1]+13, 0xFFFF);
+  ST7735_FillRect(oldPos[2], oldPos[3], oldPos[2]+11, oldPos[3]+13, 0xFFFF);
+  //make environment back
+  ST7735_DrawBitmap(positions[0], positions[1], player1, 11,13);
+  ST7735_DrawBitmap(positions[0], positions[1], player2, 11,13);
+}
+int8_t pointsy[] = {12, 11, 11, 11, 10, 10, 9, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, -9, -10, -10, -11, -11, -11};
+int8_t pointsx[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 11, 11, 11, 12, 11, 11, 11, 11, 10, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+uint8_t makeSwords(){
+  uint8_t hits = 0;
+  int val = slidepot1%32;
+  int16_t x_offset = pointsx[val];
+  int16_t y_offset = pointsy[val];
+
+  if(slidepot1>31){
+    x_offset*=-1; y_offset*=-1;
+    }
+  int16_t xloff = 0, yloff = 0;
+  uint8_t startx = positions[0]+6;
+  uint8_t starty = positions[1]+7;
+  ST7735_DrawPixel(startx, starty, 0xFFFF);
+  uint16_t lastx = 0;
+  uint16_t lasty = 0;
+  for(int i = 0; i<16; i++){
+    xloff+=x_offset;
+    yloff+=y_offset;
+    uint16_t tempx = xloff>>4;
+    uint16_t tempy = yloff>>4;
+    if(tempx!=lastx||tempy!=lasty){
+      ST7735_DrawPixel(tempx, tempy, 0xFFFF);
+      if(tempx>=positions[2]&&tempy<=positions[2]+11&&tempy>=positions[3]&&tempy<=positions[3]+13) hits++;
+    }
+  }
+  val = slidepot2%32;
+  x_offset = pointsx[val];
+  y_offset = pointsy[val];
+  xloff = 0, yloff = 0;
+  startx = positions[2]+6;
+  starty = positions[3]+7;
+  ST7735_DrawPixel(startx, starty, 0xFFFF);
+  lastx = 0;
+  lasty = 0;
+  for(int i = 0; i<16; i++){
+    xloff+=x_offset;
+    yloff+=y_offset;
+    uint16_t tempx = xloff>>4;
+    uint16_t tempy = yloff>>4;
+    if(tempx!=lastx||tempy!=lasty){
+      ST7735_DrawPixel(tempx, tempy, 0xFFFF);
+      if(tempx>=positions[0]&&tempy<=positions[0]+11&&tempy>=positions[1]&&tempy<=positions[1]+13) hits+=2;
+    }
+  }
+  if(!status1&4&&hits&2){
+    status1+=8*8;
+    status1--;
+    if(positions[0]>positions[2]) velocity[0] =10;
+    else velocity[0] = -10;
+  }
+  if(!status2&4&&hits&1){
+    status2+=8*8;
+    status2--;
+    if(positions[2]>positions[0]) velocity[2] =10;
+    else velocity[2] = -10;
+  }
+}
+//finding collisions with 
+int8_t ypos(int8_t x, int8_t y, int8_t a, int8_t p){
+  int8_t ans = 0;
+  return ans;
+}
+void sendPos1(){
+  UART1_OutChar(0xF0+(status1&0xF));
+  UART1_OutChar(swordPos1);
+  UART1_OutChar(positions[0]);
+  UART1_OutChar(positions[1]);
+}
+void sendPos2(){
+  UART1_OutChar(0xC0+(status2&0xF));
+  UART1_OutChar(swordPos2);
+  UART1_OutChar(positions[2]);
+  UART1_OutChar(positions[3]);
+}
+void readData(){
+   slidepot1 = ADCin()>>4;
+   uint32_t Input = GPIOB->DIN31_0;
+   if(Input&0x8){acceleration[0] = 1;}//change
+   if(Input&0x8){acceleration[0] = -1;}//change
+
+  
+  
+
+}
+void sendState(){
+  UART_OutChar(0xFC+state);
+}
+
+
+
+
+void TIMG12_IRQHandler(void){
+
+  if(state==0) state0();
+  if(state==1) state1();
+  if(state==2) state2();
 }

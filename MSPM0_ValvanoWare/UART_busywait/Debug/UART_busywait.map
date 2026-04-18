@@ -1,7 +1,7 @@
 ******************************************************************************
-            TI ARM Clang Linker PC v4.0.4                      
+            TI ARM Clang Linker Unix v4.0.4                    
 ******************************************************************************
->> Linked Mon Jan 12 08:52:26 2026
+>> Linked Fri Apr 17 20:28:38 2026
 
 OUTPUT FILE NAME:   <UART_busywait.out>
 ENTRY POINT SYMBOL: "_c_int00_noargs"  address: 00001ec1
@@ -207,7 +207,7 @@ MODULE SUMMARY
 
        Module                         code   ro data   rw data
        ------                         ----   -------   -------
-    .\
+    ./
        Clock.o                        336    0         4      
        UART.o                         304    13        0      
        UARTbusywait.o                 308    0         0      
@@ -216,12 +216,12 @@ MODULE SUMMARY
     +--+------------------------------+------+---------+---------+
        Total:                         1180   25        4      
                                                               
-    .\ticlang\
+    ./ticlang/
        startup_mspm0g3507_ticlang.o   60     192       0      
     +--+------------------------------+------+---------+---------+
        Total:                         60     192       0      
                                                               
-    C:\ti\ccs2020\ccs\tools\compiler\ti-cgt-armllvm_4.0.4.LTS\lib\armv6m-ti-none-eabi/c/libc.a
+    /home/hailin/ti/ccs2040/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/lib/armv6m-ti-none-eabi/c/libc.a
        _printfi.c.obj                 2166   34        0      
        memory.c.obj                   702    0         5      
        fopen.c.obj                    556    0         0      
@@ -254,7 +254,7 @@ MODULE SUMMARY
     +--+------------------------------+------+---------+---------+
        Total:                         5360   291       429    
                                                               
-    C:\ti\ccs2020\ccs\tools\compiler\ti-cgt-armllvm_4.0.4.LTS\lib\armv6m-ti-none-eabi/c/libsysbm.a
+    /home/hailin/ti/ccs2040/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/lib/armv6m-ti-none-eabi/c/libsysbm.a
        trgmsg.c.obj                   104    0         288    
        add_device.c.obj               236    0         1      
        host_device.c.obj              0      0         200    
@@ -275,7 +275,7 @@ MODULE SUMMARY
     +--+------------------------------+------+---------+---------+
        Total:                         1376   0         498    
                                                               
-    C:\ti\ccs2020\ccs\tools\compiler\ti-cgt-armllvm_4.0.4.LTS\lib\armv6m-ti-none-eabi/libclang_rt.builtins.a
+    /home/hailin/ti/ccs2040/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/lib/armv6m-ti-none-eabi/libclang_rt.builtins.a
        udivmoddi4.S.obj               162    0         0      
        aeabi_uidivmod.S.obj           64     0         0      
        muldsi3.S.obj                  58     0         0      

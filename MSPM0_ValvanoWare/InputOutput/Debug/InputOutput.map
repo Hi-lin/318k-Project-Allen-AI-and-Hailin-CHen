@@ -1,7 +1,7 @@
 ******************************************************************************
-            TI ARM Clang Linker PC v4.0.4                      
+            TI ARM Clang Linker Unix v4.0.4                    
 ******************************************************************************
->> Linked Mon Jan 12 09:02:06 2026
+>> Linked Fri Apr 17 20:28:32 2026
 
 OUTPUT FILE NAME:   <InputOutput.out>
 ENTRY POINT SYMBOL: "_c_int00_noinit_noargs"  address: 00000249
@@ -76,26 +76,26 @@ MODULE SUMMARY
 
        Module                         code   ro data   rw data
        ------                         ----   -------   -------
-    .\
+    ./
        LaunchPad.o                    336    0         0      
        InputOutputmain.o              100    0         0      
        Clock.o                        16     0         0      
     +--+------------------------------+------+---------+---------+
        Total:                         452    0         0      
                                                               
-    .\ticlang\
+    ./ticlang/
        startup_mspm0g3507_ticlang.o   60     192       0      
     +--+------------------------------+------+---------+---------+
        Total:                         60     192       0      
                                                               
-    C:\ti\ccs2020\ccs\tools\compiler\ti-cgt-armllvm_4.0.4.LTS\lib\armv6m-ti-none-eabi/c/libc.a
+    /home/hailin/ti/ccs2040/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/lib/armv6m-ti-none-eabi/c/libc.a
        boot_cortex_m.c.obj            32     0         0      
        exit.c.obj                     6      0         0      
        pre_init.c.obj                 4      0         0      
     +--+------------------------------+------+---------+---------+
        Total:                         42     0         0      
                                                               
-    C:\ti\ccs2020\ccs\tools\compiler\ti-cgt-armllvm_4.0.4.LTS\lib\armv6m-ti-none-eabi/c/libsysbm.a
+    /home/hailin/ti/ccs2040/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/lib/armv6m-ti-none-eabi/c/libsysbm.a
        hostexit.c.obj                 4      0         0      
     +--+------------------------------+------+---------+---------+
        Total:                         4      0         0      

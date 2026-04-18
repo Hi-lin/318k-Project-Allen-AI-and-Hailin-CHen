@@ -1,7 +1,7 @@
 ******************************************************************************
-            TI ARM Clang Linker PC v4.0.4                      
+            TI ARM Clang Linker Unix v4.0.4                    
 ******************************************************************************
->> Linked Wed Feb  4 09:02:50 2026
+>> Linked Fri Apr 17 20:28:28 2026
 
 OUTPUT FILE NAME:   <ECE319K_Lab2H.out>
 ENTRY POINT SYMBOL: "_c_int00_noargs"  address: 000011a1
@@ -166,7 +166,7 @@ MODULE SUMMARY
 
        Module                         code   ro data   rw data
        ------                         ----   -------   -------
-    .\
+    ./
        ECE319K_Lab2Hmain.o            2160   1130      69     
        ECE319K_Lab2H.o                542    0         0      
        Clock.o                        464    0         4      
@@ -177,12 +177,12 @@ MODULE SUMMARY
     +--+------------------------------+------+---------+---------+
        Total:                         4062   1130      73     
                                                               
-    .\ticlang\
+    ./ticlang/
        startup_mspm0g3507_ticlang.o   60     192       0      
     +--+------------------------------+------+---------+---------+
        Total:                         60     192       0      
                                                               
-    C:\ti\ccs2031\ccs\tools\compiler\ti-cgt-armllvm_4.0.4.LTS\lib\armv6m-ti-none-eabi/c/libc.a
+    /home/hailin/ti/ccs2040/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/lib/armv6m-ti-none-eabi/c/libc.a
        strcmp-armv6m.S.obj            136    0         0      
        copy_decompress_lzss.c.obj     124    0         0      
        autoinit.c.obj                 60     0         0      
@@ -195,12 +195,12 @@ MODULE SUMMARY
     +--+------------------------------+------+---------+---------+
        Total:                         428    0         0      
                                                               
-    C:\ti\ccs2031\ccs\tools\compiler\ti-cgt-armllvm_4.0.4.LTS\lib\armv6m-ti-none-eabi/c/libsysbm.a
+    /home/hailin/ti/ccs2040/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/lib/armv6m-ti-none-eabi/c/libsysbm.a
        hostexit.c.obj                 4      0         0      
     +--+------------------------------+------+---------+---------+
        Total:                         4      0         0      
                                                               
-    C:\ti\ccs2031\ccs\tools\compiler\ti-cgt-armllvm_4.0.4.LTS\lib\armv6m-ti-none-eabi/libclang_rt.builtins.a
+    /home/hailin/ti/ccs2040/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/lib/armv6m-ti-none-eabi/libclang_rt.builtins.a
        aeabi_uidivmod.S.obj           64     0         0      
        aeabi_memcpy.S.obj             8      0         0      
        aeabi_div0.c.obj               2      0         0      

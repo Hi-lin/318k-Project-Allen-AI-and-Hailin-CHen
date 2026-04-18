@@ -1,7 +1,7 @@
 ******************************************************************************
-            TI ARM Clang Linker PC v4.0.4                      
+            TI ARM Clang Linker Unix v4.0.4                    
 ******************************************************************************
->> Linked Mon Jan 12 09:01:42 2026
+>> Linked Fri Apr 17 20:28:26 2026
 
 OUTPUT FILE NAME:   <CrystalfontzLCD.out>
 ENTRY POINT SYMBOL: "_c_int00_noargs"  address: 00001175
@@ -148,7 +148,7 @@ MODULE SUMMARY
 
        Module                         code   ro data   rw data
        ------                         ----   -------   -------
-    .\
+    ./
        LCD.o                          2530   1408      34     
        SPI.o                          440    0         0      
        Clock.o                        388    0         4      
@@ -158,12 +158,12 @@ MODULE SUMMARY
     +--+------------------------------+------+---------+---------+
        Total:                         4022   1420      38     
                                                               
-    .\ticlang\
+    ./ticlang/
        startup_mspm0g3507_ticlang.o   60     192       0      
     +--+------------------------------+------+---------+---------+
        Total:                         60     192       0      
                                                               
-    C:\ti\ccs2020\ccs\tools\compiler\ti-cgt-armllvm_4.0.4.LTS\lib\armv6m-ti-none-eabi/c/libc.a
+    /home/hailin/ti/ccs2040/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/lib/armv6m-ti-none-eabi/c/libc.a
        copy_decompress_lzss.c.obj     124    0         0      
        autoinit.c.obj                 60     0         0      
        boot_cortex_m.c.obj            40     0         0      
@@ -175,12 +175,12 @@ MODULE SUMMARY
     +--+------------------------------+------+---------+---------+
        Total:                         292    0         0      
                                                               
-    C:\ti\ccs2020\ccs\tools\compiler\ti-cgt-armllvm_4.0.4.LTS\lib\armv6m-ti-none-eabi/c/libsysbm.a
+    /home/hailin/ti/ccs2040/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/lib/armv6m-ti-none-eabi/c/libsysbm.a
        hostexit.c.obj                 4      0         0      
     +--+------------------------------+------+---------+---------+
        Total:                         4      0         0      
                                                               
-    C:\ti\ccs2020\ccs\tools\compiler\ti-cgt-armllvm_4.0.4.LTS\lib\armv6m-ti-none-eabi/libclang_rt.builtins.a
+    /home/hailin/ti/ccs2040/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/lib/armv6m-ti-none-eabi/libclang_rt.builtins.a
        aeabi_idivmod.S.obj            86     0         0      
        aeabi_uidivmod.S.obj           64     0         0      
        aeabi_memcpy.S.obj             8      0         0      
