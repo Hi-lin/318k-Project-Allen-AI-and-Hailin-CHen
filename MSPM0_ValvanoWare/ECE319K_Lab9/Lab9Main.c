@@ -250,7 +250,6 @@ void main(){
   LED_Init();    // initialize LED
   Sound_Init();  // initialize sound
   TExaS_Init(0,0,&TExaS_LaunchPadLogicPB27PB26); // PB27 and PB26
-  swordPos1 = 13;
   state2_init();
   TimerG12_IntArm(80000000/30,2);
   __enable_irq();
@@ -342,7 +341,7 @@ void state2_init(void){
   ST7735_FillRect(20, 75, 80, 10, 0xc487);
   ST7735_FillRect(0, 155, 128, 5, 0xc487);
   positions[0] = 30; positions[1] = 149;
-  positions[2] = 100; positions[3] = 110;
+  positions[2] = 42; positions[3] = 149;
   acceleration[1] = 2; acceleration[3] = 2;
   ST7735_DrawBitmap(positions[0], positions[1], player1, 11, 13);
   ST7735_DrawBitmap(positions[2], positions[3], player2, 11, 13);
@@ -458,14 +457,20 @@ uint8_t makeSwords(){
   ST7735_DrawPixel(startx, starty, 0xFFFF);
   uint16_t lastx = 0;
   uint16_t lasty = 0;
+  uint8_t yval = positions[3];
   for(int i = 0; i<16; i++){
     xloff+=x_offset;
     yloff+=y_offset;
     uint16_t tempx = xloff>>4;
     uint16_t tempy = yloff>>4;
     if(tempx!=lastx||tempy!=lasty){
+      uint16_t val1 = tempx+startx;
+      uint16_t val2 = tempy+starty;
       ST7735_DrawPixel(tempx+startx, tempy+starty, 0xFFFF);
-      if(tempx>=positions[2]&&tempy<=positions[2]+11&&tempy>=positions[3]&&tempy<=positions[3]+13) hits++;
+      bool a  = tempx+startx>=positions[2]&&tempx+startx<=positions[2]+11;
+      bool b = val2<=yval;
+      bool c = val2>=(yval-13);
+      if(a&&b&&c) hits = 1;
     }
   }
   val = swordPos2%32;
@@ -480,23 +485,29 @@ uint8_t makeSwords(){
   ST7735_DrawPixel(startx, starty, 0xFFFF);
   lastx = 0;
   lasty = 0;
+  yval = positions[1];
   for(int i = 0; i<16; i++){
     xloff+=x_offset;
     yloff+=y_offset;
     uint16_t tempx = xloff>>4;
     uint16_t tempy = yloff>>4;
     if(tempx!=lastx||tempy!=lasty){
+      uint16_t val1 = tempx+startx;
+      uint16_t val2 = tempy+starty;
       ST7735_DrawPixel(tempx+startx, tempy+starty, 0xFFFF);
-      if(tempx>=positions[0]&&tempy<=positions[0]+11&&tempy>=positions[1]&&tempy<=positions[1]+13) hits+=2;
+      bool a  = tempx+startx>=positions[0]&&tempx+startx<=positions[0]+11;
+      bool b = val2<=yval;
+      bool c = val2>=(yval-13);
+      if(a&&b&&c) hits|=2;
     }
   }
-  if(!status1&4&&hits&2){
+  if((~status1&4)&&(hits&2)){
     status1+=8*8;
     status1--;
     if(positions[0]>positions[2]) velocity[0] =10;
     else velocity[0] = -10;
   }
-  if(!status2&4&&hits&1){
+  if((~status2&4)&&(hits&1)){
     status2+=8*8;
     status2--;
     if(positions[2]>positions[0]) velocity[2] =10;
