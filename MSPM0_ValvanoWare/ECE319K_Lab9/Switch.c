@@ -9,7 +9,8 @@
 // LaunchPad.h defines all the indices into the PINCM table
 void Switch_Init(void){
     // write this
- 
+    IOMUX->SECCFG.PINCM[PB12INDEX] = 0x40081;
+    //IOMUX->SECCFG.PINCM[PB16INDEX] = 0x40081;
 }
 // return current state of switches
 uint32_t Switch_In(void){
