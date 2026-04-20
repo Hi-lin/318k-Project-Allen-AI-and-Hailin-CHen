@@ -38,7 +38,7 @@ void UART2_Init(void){
   UART2->CTL0 &= ~0x01; // disable UART2
   UART2->CTL0 = 0x00020018;
  // assumes an 80 MHz bus clock
-  UART2->IBRD = 1250;//   divider = 21+45/64 = 21.703125
+  UART2->IBRD = 1250*8;//   divider = 21+45/64 = 21.703125
   UART2->FBRD = 0; // baud =2,500,000/21.703125 = 115,191
   UART2->LCRH = 0x00000030;
   UART2->CPU_INT.IMASK = 0x0001;

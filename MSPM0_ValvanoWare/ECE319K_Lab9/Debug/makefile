@@ -15,6 +15,7 @@ ORDERED_OBJS += \
 "./FIFO1.o" \
 "./LED.o" \
 "./Lab9Main.o" \
+"./Lab9Player2.o" \
 "./LaunchPad.o" \
 "./SPI.o" \
 "./ST7735.o" \
@@ -25,7 +26,7 @@ ORDERED_OBJS += \
 "./Timer.o" \
 "./UART1.o" \
 "./UART2.o" \
-"./spi1.o" \
+"./spi0.o" \
 "./images/pipedreams/PipeSound.o" \
 "./ticlang/startup_mspm0g3507_ticlang.o" \
 "../mspm0g3507.cmd" \
@@ -159,8 +160,8 @@ ECE319K_Lab9.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 # Other Targets
 clean:
 	-$(RM) $(EXE_OUTPUTS__QUOTED)
-	-$(RM) "ADC1.o" "Arabic.o" "Clock.o" "DAC5.o" "FIFO1.o" "LED.o" "Lab9Main.o" "LaunchPad.o" "SPI.o" "ST7735.o" "SmallFont.o" "Sound.o" "Switch.o" "TExaS.o" "Timer.o" "UART1.o" "UART2.o" "spi1.o" "images/pipedreams/PipeSound.o" "ticlang/startup_mspm0g3507_ticlang.o" 
-	-$(RM) "ADC1.d" "Arabic.d" "Clock.d" "DAC5.d" "FIFO1.d" "LED.d" "Lab9Main.d" "LaunchPad.d" "SPI.d" "ST7735.d" "SmallFont.d" "Sound.d" "Switch.d" "TExaS.d" "Timer.d" "UART1.d" "UART2.d" "spi1.d" "images/pipedreams/PipeSound.d" "ticlang/startup_mspm0g3507_ticlang.d" 
+	-$(RM) "ADC1.o" "Arabic.o" "Clock.o" "DAC5.o" "FIFO1.o" "LED.o" "Lab9Main.o" "Lab9Player2.o" "LaunchPad.o" "SPI.o" "ST7735.o" "SmallFont.o" "Sound.o" "Switch.o" "TExaS.o" "Timer.o" "UART1.o" "UART2.o" "spi0.o" "images/pipedreams/PipeSound.o" "ticlang/startup_mspm0g3507_ticlang.o" 
+	-$(RM) "ADC1.d" "Arabic.d" "Clock.d" "DAC5.d" "FIFO1.d" "LED.d" "Lab9Main.d" "Lab9Player2.d" "LaunchPad.d" "SPI.d" "ST7735.d" "SmallFont.d" "Sound.d" "Switch.d" "TExaS.d" "Timer.d" "UART1.d" "UART2.d" "spi0.d" "images/pipedreams/PipeSound.d" "ticlang/startup_mspm0g3507_ticlang.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 

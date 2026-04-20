@@ -24,7 +24,7 @@
  #include "UART2.h"
  #include "FIFO1.h"
  #include "../inc/SPI.h"
- //#include "spi1.c"
+ //#include "spi0.h"
 // #include "UART1.h"
 // #include "UART1.h"
 
@@ -72,119 +72,6 @@ const char *Phrases[3][4]={
   {Goodbye_English,Goodbye_Spanish,Goodbye_Portuguese,Goodbye_French},
   {Language_English,Language_Spanish,Language_Portuguese,Language_French}
 };
-// use main1 to observe special characters
-int main1(void){ // main1
-    char l;
-  __disable_irq();
-  PLL_Init(); // set bus speed
-  LaunchPad_Init();
-  ST7735_InitPrintf(INITR_REDTAB); // INITR_REDTAB for AdaFruit, INITR_BLACKTAB for HiLetGo
-  ST7735_FillScreen(0x0000);            // set screen to black
-  for(phrase_t myPhrase=HELLO; myPhrase<= GOODBYE; myPhrase++){
-    for(Language_t myL=English; myL<= French; myL++){
-         ST7735_OutString((char *)Phrases[LANGUAGE][myL]);
-      ST7735_OutChar(' ');
-         ST7735_OutString((char *)Phrases[myPhrase][myL]);
-      ST7735_OutChar(13);
-    }
-  }
-  Clock_Delay1ms(3000);
-  ST7735_FillScreen(0x0000);       // set screen to black
-  l = 128;
-  while(1){
-    Clock_Delay1ms(2000);
-    for(int j=0; j < 3; j++){
-      for(int i=0;i<16;i++){
-        ST7735_SetCursor(7*j+0,i);
-        ST7735_OutUDec(l);
-        ST7735_OutChar(' ');
-        ST7735_OutChar(' ');
-        ST7735_SetCursor(7*j+4,i);
-        ST7735_OutChar(l);
-        l++;
-      }
-    }
-  }
-}
-
-// use main2 to observe graphics
-int main2(void){ // main2
-  __disable_irq();
-  PLL_Init(); // set bus speed
-  LaunchPad_Init();
-  ST7735_InitPrintf(INITR_REDTAB); // INITR_REDTAB for AdaFruit, INITR_BLACKTAB for HiLetGo
-    //note: if you colors are weird, see different options for
-    // ST7735_InitR(INITR_REDTAB); inside ST7735_InitPrintf()
-  ST7735_FillScreen(ST7735_BLACK);
-  ST7735_DrawBitmap(22, 159, PlayerShip0, 18,8); // player ship bottom
-  ST7735_DrawBitmap(53, 151, Bunker, 18,5);
-  ST7735_DrawBitmap(42, 159, PlayerShip1, 18,8); // player ship bottom
-  ST7735_DrawBitmap(62, 159, PlayerShip2, 18,8); // player ship bottom
-  ST7735_DrawBitmap(82, 159, PlayerShip3, 18,8); // player ship bottom
-  //ST7735_DrawBitmap(0, 9, SmallEnemy10pointA, 16,10);
-  // ST7735_DrawBitmap(20,9, SmallEnemy10pointB, 16,10);
-  // ST7735_DrawBitmap(40, 9, SmallEnemy20pointA, 16,10);
-  // ST7735_DrawBitmap(60, 9, SmallEnemy20pointB, 16,10);
-  // ST7735_DrawBitmap(80, 9, SmallEnemy30pointA, 16,10);
-  ST7735_DrawBitmap(62, 159, player1, 11,13);
-  ST7735_DrawBitmap(82, 159, player2, 11,13);
-
-  for(uint32_t t=500;t>0;t=t-5){
-    SmallFont_OutVertical(t,104,6); // top left
-    Clock_Delay1ms(50);              // delay 50 msec
-  }
-  ST7735_FillScreen(0x0000);   // set screen to black
-  ST7735_SetCursor(1, 1);
-  ST7735_OutString("GAME OVER");
-  ST7735_SetCursor(1, 2);
-  ST7735_OutString("Nice try,");
-  ST7735_SetCursor(1, 3);
-  ST7735_OutString("Earthling!");
-  ST7735_SetCursor(2, 4);
-  ST7735_OutUDec(1234);
-  while(1){
-  }
-}
-
-// use main3 to test switches and LEDs
-int main3(void){ // main3
-  __disable_irq();
-  PLL_Init(); // set bus speed
-  LaunchPad_Init();
-  Switch_Init(); // initialize switches
-  LED_Init(); // initialize LED
-  while(1){
-    // write code to test switches and LEDs
-    
-  }
-}
-// use main4 to test sound outputs
-int main4(void){ uint32_t last=0,now;
-  __disable_irq();
-  PLL_Init(); // set bus speed
-  LaunchPad_Init();
-  Switch_Init(); // initialize switches
-  LED_Init(); // initialize LED
-  Sound_Init();  // initialize sound
-  TExaS_Init(ADC0,6,0); // ADC1 channel 6 is PB20, TExaS scope
-  __enable_irq();
-  while(1){
-    now = Switch_In(); // one of your buttons
-    if((last == 0)&&(now == 1)){
-      Sound_Shoot(); // call one of your sounds
-    }
-    if((last == 0)&&(now == 2)){
-      Sound_Killed(); // call one of your sounds
-    }
-    if((last == 0)&&(now == 4)){
-      Sound_Explosion(); // call one of your sounds
-    }
-    if((last == 0)&&(now == 8)){
-      Sound_Fastinvader1(); // call one of your sounds
-    }
-    // modify this to test all your sounds
-  }
-}
 //controls
 uint8_t inputs = 0; 
 // A1, B1, A2, B2, grounded1, double jump1, grounded2, double jump2
@@ -214,40 +101,43 @@ int8_t acceleration[4];
 void state0_init(void);
 void state1_init(void);
 void state2_init(void);
+void state3_init();
 void drawHearts();
 void readData();
 // ALL ST7735 OUTPUT MUST OCCUR IN MAIN
-// void mainspi(){
-//   __disable_irq();
-//   PLL_Init(); // set bus speed
-//   LaunchPad_Init();
-//   ST7735_InitPrintf(INITR_BLACKTAB); // INITR_REDTAB for AdaFruit, INITR_BLACKTAB for HiLetGo
-//   ST7735_FillScreen(ST7735_BLACK);
-//   ADCinit();     //PB18 = ADC1 channel 5, slidepot
-//   Switch_Init(); // initialize switches
-//   LED_Init();    // initialize LED
-//   Sound_Init();  // initialize sound
-//   //TExaS_Init(0,0,&TExaS_LaunchPadLogicPB27PB26); // PB27 and PB26
-//   //state2_init();
-//   TimerG12_IntArm(80000000/30,2);
-//   //SPI1_Init();
-//   __enable_irq();
-//   while(1){
-
-//   }
-// }
-// void SPI1_IRQHandler(void)
-// {
-//     uint32_t status = SPI1->CPU_INT.RIS;
-
-//     /* RX interrupt */
-//     // if(status & 0x01)
-//     // {
-//     //     SPI1_RxData = (uint8_t)SPI1->RXDATA;  // MUST READ
-
-//     //     SPI1_RxFlag = 1;  // signal main loop
-//     // }
-// }
+void main1(){
+  __disable_irq();
+  PLL_Init(); // set bus speed
+  LaunchPad_Init();
+  ST7735_InitPrintf(INITR_BLACKTAB); // INITR_REDTAB for AdaFruit, INITR_BLACKTAB for HiLetGo
+  ST7735_FillScreen(ST7735_BLACK);
+  ADCinit();     //PB18 = ADC1 channel 5, slidepot
+  Switch_Init(); // initialize switches
+  LED_Init();    // initialize LED
+  Sound_Init();  // initialize sound
+  //TExaS_Init(0,0,&TExaS_LaunchPadLogicPB27PB26); // PB27 and PB26
+  //state2_init();
+  TimerG12_IntArm(80000000/30,2);
+  UART1_Init();
+  UART2_Init();
+  SysTick_Init();
+  __enable_irq();
+  uint8_t results[5];
+  while(1){
+    for(int i = 0; i<5; i++){results[i] = 0;}
+    UART1_OutChar(10);
+    UART1_OutChar(11);
+    UART1_OutChar(12);
+    UART1_OutChar(13);
+    UART1_OutChar(14);
+    Clock_Delay1ms(1);
+    results[0] = UART2_InChar();
+    results[1] = UART2_InChar();
+    results[2] = UART2_InChar();
+    results[3] = UART2_InChar();
+    results[4] = UART2_InChar();
+  }
+}
 void main(){
   __disable_irq();
   PLL_Init(); // set bus speed
@@ -304,6 +194,8 @@ int8_t ypos(int8_t x, int8_t y, int8_t a, int8_t p);
 void sendPos1();
 void sendPos2();
 void sendState();
+uint8_t controls1 = 0;
+uint8_t controls2 = 0;
 
 void state0_init(void){
   ST7735_SetCursor(0,15);
@@ -325,6 +217,7 @@ void state0(void){
 
 
 void state1_init(void){
+  UART1_OutChar(0xF1);
   ST7735_FillScreen(ST7735_BLACK);
   //logo
   ST7735_SetCursor(0,15);
@@ -344,6 +237,7 @@ void state1(void){
 }
 int8_t bounds[] = {127, 127}; //change
 void state2_init(void){
+  UART1_OutChar(0xF2);
   ST7735_FillScreen(ST7735_BLACK);
   ST7735_FillRect(10, 110, 50, 10, 0xc487);
   ST7735_FillRect(70, 110, 50, 10, 0xc487);
@@ -359,6 +253,15 @@ void state2_init(void){
   
 }
 void state2(){
+  if(dataReady){
+     eraseOld();
+     drawPlayers();
+     drawHearts();
+    //  sendPos1();
+    //  sendPos2();
+     //AssignValues();
+     makeSwords();
+  }
   for(int i = 0; i<4; i++) oldPos[i] = positions[i];
   OldSwPos[0] = swordPos1;
   OldSwPos[1] = swordPos2;
@@ -401,16 +304,7 @@ void state2(){
     if(swordPos2>slidepot2) swordPos2 = umin(swordPos2-3, slidepot2);
     if(dashCD1!=0) dashCD1--;
     if(dashCD2!=0) dashCD2--;
-  if(dataReady){
-     readData();
-     eraseOld();
-     drawPlayers();
-     drawHearts();
-    //  sendPos1();
-    //  sendPos2();
-     //AssignValues();
-     makeSwords();
-  }
+    readData();
 }
 void drawHearts(){
   int8_t health1 = status1&3;
@@ -582,18 +476,7 @@ int8_t ypos(int8_t x, int8_t y, int8_t a, int8_t p){
   } 
   return ret;
 }
-void sendPos1(){
-  UART1_OutChar(0xF0+(status1&0xF));
-  UART1_OutChar(swordPos1);
-  UART1_OutChar(positions[0]);
-  UART1_OutChar(positions[1]);
-}
-void sendPos2(){
-  UART1_OutChar(0xC0+(status2&0xF));
-  UART1_OutChar(swordPos2);
-  UART1_OutChar(positions[2]);
-  UART1_OutChar(positions[3]);
-}
+
 uint32_t oldInput = 0;
 void readData(){
    slidepot1 = ADCin()>>6;//sword position
@@ -624,7 +507,24 @@ void readData(){
      }
      }//change
     oldInput = Input;
-  
+    while(Fifo_size()>=12){
+      while(true){
+        uint8_t val = UART2_InChar();
+        uint8_t val2 = UART2_InChar();
+        if(val==0xF0&&val2==0xFF) break;
+      }
+      slidepot2 = UART2_InChar();
+      swordPos1 = UART2_InChar();
+      status1 = UART2_InChar();
+      positions[0] = UART2_InChar();
+      positions[1] = UART2_InChar();
+      positions[2] = UART2_InChar();
+      positions[3] = UART2_InChar();
+      controls2 = UART2_InChar();
+      status2 = UART2_InChar();
+      swordPos2 = UART2_InChar();
+      break;
+    }
   
 
 }
@@ -632,16 +532,43 @@ void sendState(){
   UART_OutChar(0xFC+state);
 }
 
-
-void state4(){
+void state3_init(){
+  UART1_OutChar(0xF3);
+  UART1_OutChar(status1);
+  UART1_OutChar(status2);
+}
+void state3(){
   ST7735_FillScreen(0x0000);
 
 }
-
+uint8_t UARTFrame = 0;
 void TIMG12_IRQHandler(void){
-  SPI_OutData(10);
-  // if(state==0) state0();
-  // if(state==1) state1();
-  // if(state==2) state2();
-  // if(state==3) state4();
+   if(state==0) state0();
+   if(state==1) state1();
+   if(state==2){
+      if(UARTFrame==0)
+      state2();
+      if(UARTFrame==1){
+        UART1_OutChar(0xF0);
+        UART1_OutChar(0xFF);
+        UART1_OutChar(slidepot1);
+        UART1_OutChar(swordPos1);
+      }
+      if(UARTFrame==2){
+        UART1_OutChar(status1);
+        UART1_OutChar(positions[0]);
+        UART1_OutChar(positions[1]);
+        UART1_OutChar(positions[2]);
+      }
+      if(UARTFrame==3){
+        UART1_OutChar(positions[3]);
+        UART1_OutChar(controls1);
+        UART1_OutChar(status2);
+        UART1_OutChar(swordPos2);
+      }
+      
+      UARTFrame++;
+      UARTFrame%=4;
+   } 
+   if(state==3) state3();
 }

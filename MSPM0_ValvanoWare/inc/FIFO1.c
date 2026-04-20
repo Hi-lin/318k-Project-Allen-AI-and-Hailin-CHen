@@ -19,7 +19,7 @@ int fsize = 0;
 // put and get operations
 void Fifo1_Init(){
 //Complete this
- fifo[16];
+ fifo[24];
  findex = 0;
  fsize = 0;
 }
@@ -28,11 +28,12 @@ void Fifo1_Init(){
 // Input: data is character to be inserted
 // Output: 1 for success, data properly saved
 //         0 for failure, FIFO1 is full
+
 uint32_t Fifo1_Put(char data){
   //Complete this routine
-  if(fsize==16) return 0;
+  if(fsize==24) return 0;
   int val = findex+fsize;
-  val%=16;
+  val%=24;
   fifo[val] = data;
   fsize++;
   return 1; // replace this line with your solution
@@ -49,7 +50,7 @@ char Fifo1_Get(void){
   if(fsize == 0) return 0;
   int val = fifo[findex];
   findex++;
-  findex%=16;
+  findex%=24;
   fsize--;
    return val; // replace this line with your solution
 }

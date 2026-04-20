@@ -14,6 +14,7 @@ C_SRCS += \
 ../FIFO1.c \
 ../LED.c \
 ../Lab9Main.c \
+../Lab9Player2.c \
 /home/hailin/chenh/Hailin_stuff/tech_applications/319k/MSPM0_ValvanoWare/inc/LaunchPad.c \
 /home/hailin/chenh/Hailin_stuff/tech_applications/319k/MSPM0_ValvanoWare/inc/SPI.c \
 /home/hailin/chenh/Hailin_stuff/tech_applications/319k/MSPM0_ValvanoWare/inc/ST7735.c \
@@ -24,7 +25,7 @@ C_SRCS += \
 /home/hailin/chenh/Hailin_stuff/tech_applications/319k/MSPM0_ValvanoWare/inc/Timer.c \
 ../UART1.c \
 ../UART2.c \
-../spi1.c 
+../spi0.c 
 
 C_DEPS += \
 ./ADC1.d \
@@ -34,6 +35,7 @@ C_DEPS += \
 ./FIFO1.d \
 ./LED.d \
 ./Lab9Main.d \
+./Lab9Player2.d \
 ./LaunchPad.d \
 ./SPI.d \
 ./ST7735.d \
@@ -44,7 +46,7 @@ C_DEPS += \
 ./Timer.d \
 ./UART1.d \
 ./UART2.d \
-./spi1.d 
+./spi0.d 
 
 OBJS += \
 ./ADC1.o \
@@ -54,6 +56,7 @@ OBJS += \
 ./FIFO1.o \
 ./LED.o \
 ./Lab9Main.o \
+./Lab9Player2.o \
 ./LaunchPad.o \
 ./SPI.o \
 ./ST7735.o \
@@ -64,7 +67,7 @@ OBJS += \
 ./Timer.o \
 ./UART1.o \
 ./UART2.o \
-./spi1.o 
+./spi0.o 
 
 OBJS__QUOTED += \
 "ADC1.o" \
@@ -74,6 +77,7 @@ OBJS__QUOTED += \
 "FIFO1.o" \
 "LED.o" \
 "Lab9Main.o" \
+"Lab9Player2.o" \
 "LaunchPad.o" \
 "SPI.o" \
 "ST7735.o" \
@@ -84,7 +88,7 @@ OBJS__QUOTED += \
 "Timer.o" \
 "UART1.o" \
 "UART2.o" \
-"spi1.o" 
+"spi0.o" 
 
 C_DEPS__QUOTED += \
 "ADC1.d" \
@@ -94,6 +98,7 @@ C_DEPS__QUOTED += \
 "FIFO1.d" \
 "LED.d" \
 "Lab9Main.d" \
+"Lab9Player2.d" \
 "LaunchPad.d" \
 "SPI.d" \
 "ST7735.d" \
@@ -104,7 +109,7 @@ C_DEPS__QUOTED += \
 "Timer.d" \
 "UART1.d" \
 "UART2.d" \
-"spi1.d" 
+"spi0.d" 
 
 C_SRCS__QUOTED += \
 "/home/hailin/chenh/Hailin_stuff/tech_applications/319k/MSPM0_ValvanoWare/inc/ADC1.c" \
@@ -114,6 +119,7 @@ C_SRCS__QUOTED += \
 "../FIFO1.c" \
 "../LED.c" \
 "../Lab9Main.c" \
+"../Lab9Player2.c" \
 "/home/hailin/chenh/Hailin_stuff/tech_applications/319k/MSPM0_ValvanoWare/inc/LaunchPad.c" \
 "/home/hailin/chenh/Hailin_stuff/tech_applications/319k/MSPM0_ValvanoWare/inc/SPI.c" \
 "/home/hailin/chenh/Hailin_stuff/tech_applications/319k/MSPM0_ValvanoWare/inc/ST7735.c" \
@@ -124,6 +130,6 @@ C_SRCS__QUOTED += \
 "/home/hailin/chenh/Hailin_stuff/tech_applications/319k/MSPM0_ValvanoWare/inc/Timer.c" \
 "../UART1.c" \
 "../UART2.c" \
-"../spi1.c" 
+"../spi0.c" 
 
 

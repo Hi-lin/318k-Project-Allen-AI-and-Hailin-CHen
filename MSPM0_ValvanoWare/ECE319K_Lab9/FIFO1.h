@@ -43,5 +43,6 @@ uint32_t Fifo1_Put(char data);
  */
 char Fifo1_Get(void);
 
+uint8_t Fifo_size();
 #endif //  __FIFO1_H__
 /** @}*/

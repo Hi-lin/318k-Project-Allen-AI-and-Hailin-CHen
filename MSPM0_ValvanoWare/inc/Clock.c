@@ -262,7 +262,7 @@ void SysTick_Init(void){
 // about a 50 cycle overhead
 void SysTick_Wait(uint32_t delay){
   SysTick->LOAD = delay-1;  // number of counts to wait
-  SysTick->VAL = 0;         // any value written to VAL clears
+  SysTick->VAL = 00;         // any value written to VAL clears
   while((SysTick->CTRL&0x00010000)==0){} // wait for count flag
 }
 // The t parameter is in units 10ms.
