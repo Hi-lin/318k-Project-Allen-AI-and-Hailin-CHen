@@ -34,7 +34,7 @@ Lab9Main.o: ../Lab9Main.c \
  ../../inc/ST7735.h ../../inc/Clock.h ../../inc/LaunchPad.h \
  ../../inc/TExaS.h ../../inc/Timer.h ../../inc/ADC1.h ../../inc/DAC5.h \
  ../../inc/Arabic.h ../SmallFont.h ../LED.h ../Switch.h ../Sound.h \
- ../images/images.h ../UART1.h ../UART2.h ../FIFO1.h
+ ../images/images.h ../UART1.h ../UART2.h ../FIFO1.h ../../inc/SPI.h
 /home/hailin/ti/mspm0_sdk_2_09_00_01/source/ti/devices/msp/msp.h:
 /home/hailin/ti/mspm0_sdk_2_09_00_01/source/ti/devices/DeviceFamily.h:
 /home/hailin/ti/mspm0_sdk_2_09_00_01/source/ti/devices/msp/m0p/mspm0g350x.h:
@@ -81,3 +81,4 @@ Lab9Main.o: ../Lab9Main.c \
 ../UART1.h:
 ../UART2.h:
 ../FIFO1.h:
+../../inc/SPI.h:

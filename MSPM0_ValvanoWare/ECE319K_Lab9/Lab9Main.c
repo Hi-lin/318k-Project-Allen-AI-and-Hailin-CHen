@@ -23,6 +23,8 @@
  #include "UART1.h"
  #include "UART2.h"
  #include "FIFO1.h"
+ #include "../inc/SPI.h"
+ //#include "spi1.c"
 // #include "UART1.h"
 // #include "UART1.h"
 
@@ -41,35 +43,8 @@ alif,ayh,baa,daad,daal,dhaa,dhaal,faa,ghayh,haa,ha,jeem,kaaf,khaa,laam,meem,noon
 Arabic_t Hello[]={alif,baa,ha,raa,meem,null}; // hello
 Arabic_t WeAreHonoredByYourPresence[]={alif,noon,waaw,ta,faa,raa,sheen,null}; // we are honored by your presence
 char engHonored[] = "We are honored by your presence";
-
-int main0(void){ // main 0, demonstrate Arabic output
-  __disable_irq();
-  Clock_Init80MHz(0);
-  LaunchPad_Init();
-  ST7735_InitR(INITR_REDTAB); // INITR_REDTAB for AdaFruit, INITR_BLACKTAB for HiLetGo
-  ST7735_FillScreen(ST7735_WHITE);
-  Arabic_SetCursor(0,15);
-  Arabic_OutString(Hello);
-  Arabic_SetCursor(0,31);
-  Arabic_OutString(WeAreHonoredByYourPresence);
-  Arabic_SetCursor(0,63);
-  Arabic_OutString(ArabicAlphabet);
-  while(1){
-    
-  }
-}
-
 // void state0(){
 // }
-uint32_t M=1;
-uint32_t Random32(void){
-  M = 1664525*M+1013904223;
-  return M;
-}
-uint32_t Random(uint32_t n){
-  return (Random32()>>16)%n;
-}
-
 
 // games  engine runs at 30Hz
 
@@ -226,6 +201,8 @@ uint8_t status1 = 0;
 //0-1 hp, 2 tgl invincibility, 3-7 invincibility time
 uint8_t status2 = 0;
 //0-1 hp, 2 tgl invincibility
+uint8_t dashCD1 = 0;
+uint8_t dashCD2 = 0;
 
 // current states
 uint8_t OldSwPos[2];
@@ -237,8 +214,40 @@ int8_t acceleration[4];
 void state0_init(void);
 void state1_init(void);
 void state2_init(void);
+void drawHearts();
 void readData();
 // ALL ST7735 OUTPUT MUST OCCUR IN MAIN
+// void mainspi(){
+//   __disable_irq();
+//   PLL_Init(); // set bus speed
+//   LaunchPad_Init();
+//   ST7735_InitPrintf(INITR_BLACKTAB); // INITR_REDTAB for AdaFruit, INITR_BLACKTAB for HiLetGo
+//   ST7735_FillScreen(ST7735_BLACK);
+//   ADCinit();     //PB18 = ADC1 channel 5, slidepot
+//   Switch_Init(); // initialize switches
+//   LED_Init();    // initialize LED
+//   Sound_Init();  // initialize sound
+//   //TExaS_Init(0,0,&TExaS_LaunchPadLogicPB27PB26); // PB27 and PB26
+//   //state2_init();
+//   TimerG12_IntArm(80000000/30,2);
+//   //SPI1_Init();
+//   __enable_irq();
+//   while(1){
+
+//   }
+// }
+// void SPI1_IRQHandler(void)
+// {
+//     uint32_t status = SPI1->CPU_INT.RIS;
+
+//     /* RX interrupt */
+//     // if(status & 0x01)
+//     // {
+//     //     SPI1_RxData = (uint8_t)SPI1->RXDATA;  // MUST READ
+
+//     //     SPI1_RxFlag = 1;  // signal main loop
+//     // }
+// }
 void main(){
   __disable_irq();
   PLL_Init(); // set bus speed
@@ -322,12 +331,12 @@ void state1_init(void){
 }
 
 void state1(void){
-  if(inputs&&4){
+  if(inputs&4){
     state = 0; 
     sendState();
     state0_init();
   }
-  if(inputs&&8){
+  if(inputs&8){
     state = 2;
     sendState();
     state2_init();
@@ -343,6 +352,7 @@ void state2_init(void){
   positions[0] = 30; positions[1] = 149;
   positions[2] = 42; positions[3] = 149;
   acceleration[1] = 2; acceleration[3] = 2;
+  status1 = 3; status2 = 3;
   ST7735_DrawBitmap(positions[0], positions[1], player1, 11, 13);
   ST7735_DrawBitmap(positions[2], positions[3], player2, 11, 13);
   makeSwords();
@@ -366,27 +376,57 @@ void state2(){
       positions[i] = temp;
     }
       velocity[i]+=acceleration[i];
-      if(i%2==0)
-        if(velocity[i]<-3) velocity[i] = -3;//capping mobility
-      if(velocity[i]>3) velocity[i] = 3;
-      }
+  }
+    if(velocity[1]>4) velocity[1] = 4;
+    if(velocity[3]>4) velocity[3] = 4;
     if(acceleration[0]==0) velocity[0]/=2;
     if(acceleration[2]==0) velocity[2]/=2;
+    if(~status1&4){
+      if(velocity[0]<-3) velocity[0] = -3;//capping mobility
+      if(velocity[0]>3) velocity[0] = 3;
+    }
+    if(~status2&4){
+      if(velocity[2]<-3) velocity[2] = -3;//capping mobility
+      if(velocity[2]>3) velocity[2] = 3;
+    }
     positions[1] = ypos(positions[0], positions[1], velocity[1], 0);
     positions[3] = ypos(positions[2], positions[3], velocity[3], 1);
+    if(!(status1&0xF8)) status1&=(~0x04);
+    else status1-=8;
+    if(!(status2&0xF8)) status2&=(~0x04);
+    else status2-=8;
     if(swordPos1<slidepot1) swordPos1 = umax(swordPos1+3, slidepot1);
     if(swordPos1>slidepot1) swordPos1 = umin(swordPos1-3, slidepot1);
     if(swordPos2<slidepot2) swordPos2 = umax(swordPos2+3, slidepot2);
     if(swordPos2>slidepot2) swordPos2 = umin(swordPos2-3, slidepot2);
+    if(dashCD1!=0) dashCD1--;
+    if(dashCD2!=0) dashCD2--;
   if(dataReady){
      readData();
      eraseOld();
      drawPlayers();
+     drawHearts();
     //  sendPos1();
     //  sendPos2();
      //AssignValues();
      makeSwords();
   }
+}
+void drawHearts(){
+  int8_t health1 = status1&3;
+  int8_t health2 = status2&3;
+  if(health1==0){ state++;return; }
+  if(health2==0) {
+  state++; 
+  return;}
+  ST7735_FillRect(5, 5, 30, 8, 0x0000);
+  ST7735_FillRect(98, 5, 30, 8, 0x0000);
+  if(health1>2) ST7735_DrawBitmap(5, 10, heart, 5, 5);
+  if(health1>1) ST7735_DrawBitmap(15, 10, heart, 5, 5);
+  if(health1>0) ST7735_DrawBitmap(25, 10, heart, 5, 5); 
+  if(health2>2) ST7735_DrawBitmap(118, 10, heart, 5, 5);
+  if(health2>1) ST7735_DrawBitmap(108, 10, heart, 5, 5);
+  if(health2>0) ST7735_DrawBitmap(98, 10, heart, 5, 5);  
 }
 int8_t min(int8_t a, int8_t b){
   if(a>b) return b;
@@ -433,8 +473,8 @@ void eraseOldSwords(){
   }
 }
 void eraseOld(){
-  ST7735_FillRect(oldPos[0], (uint8_t)oldPos[1]-11, 11, 11, 0x0000);
-  ST7735_FillRect(oldPos[2], (uint8_t)oldPos[3]-11, 11, 11, 0x0000);
+  ST7735_FillRect(oldPos[0], (uint8_t)oldPos[1]-13, 11, 13, 0x0000);
+  ST7735_FillRect(oldPos[2], (uint8_t)oldPos[3]-13, 11, 13, 0x0000);
   eraseOldSwords();
   //make environment back
   ST7735_FillRect(10, 110, 50, 10, 0xc487);
@@ -502,12 +542,14 @@ uint8_t makeSwords(){
     }
   }
   if((~status1&4)&&(hits&2)){
+    status1+=4;
     status1+=8*8;
     status1--;
     if(positions[0]>positions[2]) velocity[0] =10;
     else velocity[0] = -10;
   }
   if((~status2&4)&&(hits&1)){
+    status2+=4;
     status2+=8*8;
     status2--;
     if(positions[2]>positions[0]) velocity[2] =10;
@@ -515,21 +557,25 @@ uint8_t makeSwords(){
   }
 }
 void drawPlayers(){
-  ST7735_DrawBitmap(positions[0], (uint8_t)positions[1], player1, 11, 13);
-  ST7735_DrawBitmap(positions[2], (uint8_t)positions[3], player2, 11, 13);
+  if(status1&4) ST7735_DrawBitmap(positions[0], (uint8_t)positions[1], player1i, 11, 13);
+  else ST7735_DrawBitmap(positions[0], (uint8_t)positions[1], player1, 11, 13);
+  if(status2&4) ST7735_DrawBitmap(positions[2], (uint8_t)positions[3], player2i, 11, 13);
+  else ST7735_DrawBitmap(positions[2], (uint8_t)positions[3], player2, 11, 13);
 }
 //finding collisions with 
 int8_t ypos(int8_t x, int8_t y, int8_t a, int8_t p){
   uint8_t ret = (uint8_t)y;
   uint8_t hit = 0;
   uint8_t temp = y-155;
-  if(temp<0) ret = 155;
+  if(temp<=0){ ret = 155; hit++;}
   if(x>5&&x<55&&(uint8_t)y>=110&&(uint8_t)y-a<=110){ ret = 110; hit++;}
   if(x>65&&x<115&&(uint8_t)y>=110&&(uint8_t)y-a<=110) {ret = 110; hit++;}
   if(x>15&&x<95&&(uint8_t)y>=75&&(uint8_t)y-a<=75) {ret = 75; hit++;}
   if(hit){
     velocity[p*2+1] = 0;
+    if(p==0)
     inputs|= 3<<4;
+  else inputs|=3<<6;
   }
   else{
     uint8_t  c = 0;
@@ -555,14 +601,25 @@ void readData(){
    uint32_t Input = GPIOB->DIN31_0;
     // if(Input&1<<12){acceleration[0] = 1;}//move right
     // else acceleration[0] = 0;
-
+   if(Input&1<<16){
+    if(!dashCD1){
+      if (velocity[0]>=0) {
+        velocity[0] = 10;
+      }
+      else velocity[0] = -10;
+      status1|=4;
+      status1&=7;
+      status1+=8*5;
+      dashCD1 = 0xA;
+    }
+   }
    if(Input&1<<12&&!(oldInput&1<<12)){//jump
      if(inputs&16){
-       velocity[1] = -10;
+       velocity[1] = -12;
        inputs&=(~16);
      }
      else if (inputs&32) {
-       velocity[1] = -6;
+       velocity[1] = -8;
        inputs&=(~32);
      }
      }//change
@@ -576,11 +633,15 @@ void sendState(){
 }
 
 
+void state4(){
+  ST7735_FillScreen(0x0000);
 
+}
 
 void TIMG12_IRQHandler(void){
-
-  if(state==0) state0();
-  if(state==1) state1();
-  if(state==2) state2();
+  SPI_OutData(10);
+  // if(state==0) state0();
+  // if(state==1) state1();
+  // if(state==2) state2();
+  // if(state==3) state4();
 }

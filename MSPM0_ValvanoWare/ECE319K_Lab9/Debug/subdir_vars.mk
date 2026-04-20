@@ -23,7 +23,8 @@ C_SRCS += \
 /home/hailin/chenh/Hailin_stuff/tech_applications/319k/MSPM0_ValvanoWare/inc/TExaS.c \
 /home/hailin/chenh/Hailin_stuff/tech_applications/319k/MSPM0_ValvanoWare/inc/Timer.c \
 ../UART1.c \
-../UART2.c 
+../UART2.c \
+../spi1.c 
 
 C_DEPS += \
 ./ADC1.d \
@@ -42,7 +43,8 @@ C_DEPS += \
 ./TExaS.d \
 ./Timer.d \
 ./UART1.d \
-./UART2.d 
+./UART2.d \
+./spi1.d 
 
 OBJS += \
 ./ADC1.o \
@@ -61,7 +63,8 @@ OBJS += \
 ./TExaS.o \
 ./Timer.o \
 ./UART1.o \
-./UART2.o 
+./UART2.o \
+./spi1.o 
 
 OBJS__QUOTED += \
 "ADC1.o" \
@@ -80,7 +83,8 @@ OBJS__QUOTED += \
 "TExaS.o" \
 "Timer.o" \
 "UART1.o" \
-"UART2.o" 
+"UART2.o" \
+"spi1.o" 
 
 C_DEPS__QUOTED += \
 "ADC1.d" \
@@ -99,7 +103,8 @@ C_DEPS__QUOTED += \
 "TExaS.d" \
 "Timer.d" \
 "UART1.d" \
-"UART2.d" 
+"UART2.d" \
+"spi1.d" 
 
 C_SRCS__QUOTED += \
 "/home/hailin/chenh/Hailin_stuff/tech_applications/319k/MSPM0_ValvanoWare/inc/ADC1.c" \
@@ -118,6 +123,7 @@ C_SRCS__QUOTED += \
 "/home/hailin/chenh/Hailin_stuff/tech_applications/319k/MSPM0_ValvanoWare/inc/TExaS.c" \
 "/home/hailin/chenh/Hailin_stuff/tech_applications/319k/MSPM0_ValvanoWare/inc/Timer.c" \
 "../UART1.c" \
-"../UART2.c" 
+"../UART2.c" \
+"../spi1.c" 
 
 

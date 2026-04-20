@@ -15,6 +15,7 @@
 "./Timer.o"
 "./UART1.o"
 "./UART2.o"
+"./spi1.o"
 "./images/pipedreams/PipeSound.o"
 "./ticlang/startup_mspm0g3507_ticlang.o"
 "../mspm0g3507.cmd"
